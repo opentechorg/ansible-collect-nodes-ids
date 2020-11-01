@@ -1,0 +1,39 @@
+---
+- name: Prepare
+  hosts: network
+  strategy: free
+  gather_facts: false
+  tasks:
+    - name: install Webfs lightweight web server
+      package:
+        pkg: webfs
+        state: latest
+
+    - name: upload new Webfs configuration
+      copy:
+        src: webfsd.conf
+        dest: "/etc/webfsd.conf"
+        owner: www-data
+        group: www-data
+        mode: 0644
+
+    - name: Creates /var/www/html directory
+      file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: upload node node status stub
+      copy:
+        src: "{{ status_stub }}"
+        dest: "/var/www/html/status"
+        owner: www-data
+        group: www-data
+        mode: 0644
+
+    - name: restart webfs
+      service:
+        name: webfs
+        state: restarted

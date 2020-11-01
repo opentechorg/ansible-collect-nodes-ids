@@ -1,0 +1,66 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: validator_node
+    image: geerlingguy/docker-debian10-ansible
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: "/sbin/init"
+    privileged: true
+    pre_build_image: true
+  - name: sentry_node
+    image: geerlingguy/docker-debian10-ansible
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    command: "/sbin/init"
+    privileged: true
+    pre_build_image: true
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: prepare.yml
+  inventory:
+    hosts:
+      all:
+        children:
+          sentry:
+            hosts:
+              sentry_node:
+                status_stub: "status-sentry.json"
+          validator:
+            hosts:
+              validator_node:
+                status_stub: "status.json"
+          localhost:
+            hosts:
+              COMMON_DATA_HOST:
+                sentry_config: []
+                validator_ids: []
+          network:
+            children:
+              sentry:
+              validator:
+    host_vars:
+      sentry_node:
+        private_address: 192.168.0.100
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callback_whitelist: profile_tasks, timer, yaml
+    ssh_connection:
+      pipelining: false
+verifier:
+  name: ansible
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

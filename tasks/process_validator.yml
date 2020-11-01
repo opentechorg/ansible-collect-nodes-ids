@@ -1,0 +1,4 @@
+---
+- name: Add validator node id to the list of node ids
+  set_fact:
+    validator_ids: "{{ validator_ids }} + [ '{{ node_id }}' ]"

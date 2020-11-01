@@ -1,0 +1,12 @@
+---
+- name: Prepare sentry node data
+  set_fact:
+    sentry_data:
+      id: "{{ node_id }}"
+      private_address: "{{ private_address }}"
+  when: node_id is defined and inventory_hostname in groups['sentry']
+
+- name: Add sentry node data to sentry config list
+  set_fact:
+    sentry_config: "{{ sentry_config }} + [ {{ sentry_data }} ]"
+  when: sentry_data is defined and inventory_hostname in groups['sentry']

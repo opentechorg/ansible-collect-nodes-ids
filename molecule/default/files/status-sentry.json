@@ -1,0 +1,23 @@
+{
+    "jsonrpc": "2.0",
+    "id": -1,
+    "result": {
+      "node_info": {
+        "protocol_version": {
+          "p2p": "8",
+          "block": "11",
+          "app": "0"
+        },
+        "id": "b820b4725152e076f9355c81a1f07cee8a1f2abc",
+        "listen_addr": "tcp://0.0.0.0:26656",
+        "network": "stargate-3a",
+        "version": "0.34.0",
+        "channels": "",
+        "moniker": "node",
+        "other": {
+          "tx_index": "on",
+          "rpc_address": "tcp://0.0.0.0:26657"
+        }
+      }
+    }
+  }

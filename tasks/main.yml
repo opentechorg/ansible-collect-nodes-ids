@@ -1,0 +1,29 @@
+---
+- name: Get node id
+  uri:
+    url: "{{ rpc_status_url }}"
+    return_content: true
+  register: node_status_cli
+
+- name: Get Node Id from status
+  set_fact:
+    node_id: "{{ node_status_cli.json.result.node_info.id }}"
+
+- name: Set temporary variable to store sentry configs
+  set_fact:
+    sentry_config: "{{ hostvars['COMMON_DATA_HOST']['sentry_config'] }}"
+    validator_ids: "{{ hostvars['COMMON_DATA_HOST']['validator_ids'] }}"
+
+- name: Set sentry node data
+  include_tasks: process_sentry.yml
+  when: node_id is defined and inventory_hostname in groups['sentry']
+
+- name: Set validator node data
+  include_tasks: process_validator.yml
+  when: node_id is defined and inventory_hostname in groups['validator']
+
+- name: Register dummy host with COMMON_DATA_HOST variable
+  add_host:
+    name: "COMMON_DATA_HOST"
+    sentry_config: "{{ sentry_config }}"
+    validator_ids: "{{ validator_ids }}"

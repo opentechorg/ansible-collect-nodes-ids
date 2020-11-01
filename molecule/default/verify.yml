@@ -1,0 +1,27 @@
+---
+- name: Verify
+  hosts: network
+  serial: 1
+  tasks:
+    - name: "Include collect_nodes_id"
+      include_role:
+        name: "collect_nodes_id"
+
+- name: Verify sentry/vlidator facts
+  hosts: COMMON_DATA_HOST
+  connection: local
+  tasks:
+    - name: Sentry node info should contain private address.
+      fail:
+        msg: "Wrong private address - {{ sentry_config[0].private_address }}"
+      when: sentry_config[0].private_address != "192.168.0.100"
+
+    - name: Sentry node info should contain node id.
+      fail:
+        msg: "Wrong sentry node id - {{ sentry_config[0].id }}"
+      when: sentry_config[0].id != "b820b4725152e076f9355c81a1f07cee8a1f2abc"
+
+    - name: Validator ids array should contain node id.
+      fail:
+        msg: "Wrong validator node id - {{ validator_ids[0] }}"
+      when: validator_ids[0] != "b820b4725152e076f9355c81a1f07cee8a1f268e"
