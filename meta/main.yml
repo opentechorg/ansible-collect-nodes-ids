@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  role_name: collect_nodes_id
+  role_name: collect_nodes_ids
   author: Albert Andrejev
   description: This role should collect tendermint nodes id to use it with
     other roles to setup relations between sentry and validator nodes.
@@ -11,7 +11,7 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - 10
+        - buster
 
   galaxy_tags:
     - tendermint
